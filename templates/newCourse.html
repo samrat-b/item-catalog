@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Welcome to Home Page</title>
+    <!-- <link rel="stylesheet" type="text/css" href="../static/main.css"> -->
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body style="background-color: antiquewhite">
+
+    <div class="w3-container w3-black">
+        <h1><a href="./home.html">Learn German in Easy Way</a></h1>
+    </div>
+
+    <form method="POST" action="#">
+
+        <label for="course" id="course_label">Course Name:</label>
+        <input type="text" name="course" placeholder="New Course Name">
+        <br>
+        <label for="level" id="level_label">Level Name:</label>
+        <!-- <input type="text" name="level" placeholder=""> -->
+        <select name="level">
+            {% for level in levels %}
+            <option >{{level.name}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="detail" id="course_label">Course Details:</label>
+        <br>
+        <textarea name="detail" id="textarea" cols="60" rows="3" maxlength="110"
+        placeholder="Course Details"></textarea>
+        <br><br><br>
+        <input type="submit" value="Add a New Course" style="margin-left: 42px">
+    </form>
+</body>
+
+</html>

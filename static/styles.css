@@ -1,0 +1,124 @@
+/* a {
+    text-decoration: none;
+} */
+li {
+    font-size: larger;
+    /* color: steelblue; */
+}
+
+#course_title,
+#level_title,
+#detail_title {
+
+    display: inline-block;
+    margin-right: 20px;
+    width: 170px;
+    text-align: end;
+    font-size: 27px;
+    font-family: Calibri;
+}
+
+#course_name,
+#level_name {
+
+    display: inline-block;
+    /* margin-right: 20px; */
+    width: 300px;
+    text-align: initial;
+}
+
+#course_detail {
+    display: block;
+    width: auto;
+    text-align: initial;
+    margin-left: 42px;
+    margin-right: 20px;
+    /* background-color: seashell; */
+    background-color: lightyellow;
+    font-family: 'Calibri';
+    font-size: large;
+}
+
+#txtarea {
+    margin-left: 40px;
+    size: inherit;
+}
+
+#course_label {
+
+    display: inline-block;
+    margin-right: 20px;
+    margin-top: 8px;
+    width: 170px;
+    text-align: end;
+    font-size: 27px;
+    font-family: Calibri;
+}
+
+#level_label {
+
+    display: inline-block;
+    margin-right: 20px;
+    margin-top: 15px;
+    width: 170px;
+    text-align: end;
+    font-size: 27px;
+    font-family: Calibri;
+}
+
+#textarea {
+    /* background-color: seashell; */
+    margin-left: 42px;
+}
+
+#del_course{
+        display: block;
+        width: auto;
+        text-align: initial;
+        margin: 3%;
+        background-color: aliceblue;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: x-large;
+}
+
+#edit{
+    /* display: block; */
+    display: inline-block;
+    padding: 0.3%;
+    width: fit-content;
+    text-align: center;
+    margin-left: 42px;
+    margin-top: 30px;
+    background-color: lightseagreen;
+    color: aliceblue;
+    font-family: 'Calibri';
+    font-size: 24px;
+}
+
+#delete{
+    /* display: block; */
+    display: inline-block;
+    padding: 0.3%;
+    width: fit-content;
+    text-align: center;
+    margin-left: 20px;
+    margin-top: 30px;
+    background-color: rgb(199, 108, 146);
+    color: aliceblue;
+    font-family: 'Calibri';
+    font-size: 24px;   
+}
+
+#add{
+    /* display: block; */
+    display: inline-block;
+    padding: 0.3%;
+    width: fit-content;
+    text-align: center;
+    margin-left: 20px;
+    margin-top: 30px;
+    background-color: rgb(0, 60, 255);
+    color: aliceblue;
+    font-family: 'Calibri';
+    font-size: 24px;   
+}

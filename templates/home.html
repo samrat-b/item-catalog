@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <!-- <link rel="stylesheet" type="text/css" href="../static/main.css"> -->
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+    <script>
+        function start() {
+            gapi.load('auth2', function () {
+                auth2 = gapi.auth2.init({
+                    client_id: '608409453798-2p3ce5v0mu2ga643ueb9b50an04bmup7.apps.googleusercontent.com'
+                });
+            });
+        }
+    </script>
+</head>
+
+<body style="background-color: antiquewhite">
+
+    <div class="w3-container">
+        <div class="w3-display-container w3-black" style="height:70px;">
+            <div class="w3-display-topleft">
+                <h1><a href="{{url_for('listLevels')}}">Home</a></h1>
+            </div>
+            <div class="w3-display-topmiddle">
+                <h1>Learn German in Easy Way</h1>
+            </div>
+            <div class="w3-display-topright">
+                <h1>Login</h1>
+                <!-- <div id="signinButton">
+                    <span class="g-signin" data-scope="openid email"
+                        data-clientid="608409453798-2p3ce5v0mu2ga643ueb9b50an04bmup7.apps.googleusercontent.com"
+                        data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin"
+                        data-callback="signInCallback" data-approvalprompt="force">
+                    </span>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+    <div class="w3-container">
+        <br><br><br><br>
+
+        <ul class="w3-ul w3-large">
+            {% for level in levels %}
+            <li class="w3-hover-blue" style="font-size: 34px; font-family: Calibri">
+                <a href="{{url_for('listCourses', level_id=level.id)}}">{{level.name}}</a></li>
+            {% endfor %}
+            <!-- <li class="w3-hover-green" style="font-size: 34px; font-family: Calibri">
+                <a href="https://www.google.co.in/">German for Beginners</a></li>
+            <li class="w3-hover-blue" style="font-size: 34px; font-family: Calibri">
+                <a href="https://www.google.co.in/">Learn German Further</a></li>
+            <li class="w3-hover-orange" style="font-size: 34px; font-family: Calibri">
+                <a href="https://www.google.co.in/">Master German Language</a></li> -->
+        </ul>
+    </div>
+    <br><br>
+    <div id="add">
+        <a style="text-decoration: none" href="{{url_for('newCourse')}}">Add a New Course</a></div>
+    <br><br><br><br><br><br><br>
+    <!-- <br><br> -->
+    <div class="w3-container w3-green" style="text-align: end">
+        <h2>Learning German is fun !!!</h2>
+    </div>
+</body>
+
+<button id="signinButton">Google Signin</button>
+
+<div id="result"></div>
+
+<script>
+    $('#signinButton').click(function () {
+        function signInCallback(authResult) {
+            if (authResult['code']) {
+                $('#signinButton').attr('style', 'display:none');
+                $.ajax({
+                    type: 'POST',
+                    url: '/gconnect?state={{STATE}}',
+                    processData: false,
+                    data: authResult['code'],
+                    contentType: 'application/octet-stream; charset=utf-8',
+                    success: function (result) {
+                        if (result) {
+                            $('#result').html('Login Successful!</br>' + result +
+                                '</br>Redirecting...');
+                            setTimeout(function () {
+                                window.location.href = "/";
+                            }, 4000);
+                        } else if (authResult['error']) {
+                            console.log('There was an error: ' + authResult['error']);
+                        } else {
+                            $('#result').html(
+                                'Failed to make a server-side call. Check your configuration and console.'
+                            );
+                        }
+                    }
+                });
+            }
+        }
+        auth2.grantOfflineAccess().then(signInCallback);
+    })
+</script>
+
+</html>

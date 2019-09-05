@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <!-- <link rel="stylesheet" type="text/css" href="../static/main.css">     -->
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body style="background-color: antiquewhite">
+
+    <div class="w3-container w3-black">
+        <h1><a href="./home.html">Learn German in Easy Way</a></h1>
+    </div>
+
+    <form method="POST" action="#">
+
+        <div id="del_course">
+            <h1>Are you sure?</h1>
+            On click of below button selected course will get permanently deleted. If you are sure, please
+            click to continue.
+        </div>
+
+        <input type="submit" value="Delete my selection" style="margin-left: 42px">
+    </form>
+</body>
+
+</html>

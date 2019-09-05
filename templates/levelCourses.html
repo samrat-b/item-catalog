@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <!-- <link rel="stylesheet" type="text/css" href="../static/main.css"> -->
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body style="background-color: antiquewhite">
+
+    <div class="w3-container w3-black">
+        <h1><a href="{{url_for('listLevels')}}">Learn German in Easy Way</a></h1>
+    </div>
+    {% for course in levelCourses %}
+    <div id="course_title">Course Name:</div>
+    <div id="course_name">
+        <!-- <h3>A1</h3> -->
+        <h3>{{course.name}}</h3>
+    </div>
+    <br>
+    <div id="level_title">
+        <!-- <h3>Level Name:</h3> -->
+        Level Name:
+    </div>
+    <div id="level_name">
+        <!-- <h3>German for Beginners</h3> -->
+        <h3>{{levelName}}</h3>
+    </div>
+    <br>
+    <div id="detail_title">
+        <!-- <h3>Course Details:</h3> -->
+        Course Details:
+    </div>
+    <div id="course_detail">
+        <!-- text, sample text, text, sample text, text, sample text, text, sample text -->
+        {{course.details}}
+    </div>
+    <div id="edit">
+        <a style="text-decoration: none"
+            href="{{url_for('editCourse', level_id=course.level_id, course_id=course.id)}}">
+            Edit Course</a></div>
+    <div id="delete">
+        <a style="text-decoration: none"
+            href="{{url_for('delCourse', level_id=course.level_id, course_id=course.id)}}">
+            Delete Course</div>
+    <hr style="border: 1px solid black">
+    {% endfor %}
+    <!-- <div id="edit">
+        <a style="text-decoration: none" href="https://www.google.co.in/">Edit Course</a></div>
+    <div id="delete">Delete Course</div> -->
+
+</body>
+
+</html>
