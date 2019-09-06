@@ -15,8 +15,8 @@ Download Vagrant software using [URL](https://www.vagrantup.com/downloads.html)
 Download VirtualBox using [URL](https://www.virtualbox.org/wiki/Download_Old_Builds_5_1), then install the 
 version respective to your OS.
 
-How to run the program
-----------------------
+How to run the application
+--------------------------
 1. Clone [Reporsitory](https://github.com/udacity/fullstack-nanodegree-vm)
 2. Place the code part of this project inside catalog folder of above cloned repository 
 3. Run Vagrant - 'vagrant up'
