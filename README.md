@@ -35,3 +35,7 @@ Consume this App's data into another App using below JSON endpoints:
     - Returns all courses details belonging a particular level
 3. /course/<int:course_id>/json 
     - Returns a particular course level detail
+    
+Acknowledgment
+--------------
+I acknowledge [Udacity](https://www.udacity.com/) for the tutorials and resources, which assisted me to develop this app.
