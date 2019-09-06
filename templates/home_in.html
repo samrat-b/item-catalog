@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body style="background-color: antiquewhite">
+
+    <div class="w3-container">
+        <div class="w3-display-container w3-black" style="height:70px;">
+            <!-- <div class="w3-display-topleft">
+                <h1><a href="{{url_for('listLevels_in')}}">Home</a></h1>
+            </div> -->
+            <div class="w3-display-topleft">
+                <h1>Learn German in Easy Way</h1>
+            </div>
+            <div class="w3-display-topright">
+                <h5 style="background-color:lightgray; color: rgb(48, 28, 28); margin-top: 20%">
+                    <a href="{{url_for('gdisconnect')}}">Google Signout</a></h5>
+                <!-- <button id="signoutButton" style="margin-top: 20%">Google Signout</button> -->
+            </div>
+        </div>
+    </div>
+
+    <div class="w3-container">
+        <br><br><br><br>
+
+        <ul class="w3-ul w3-large">
+            {% for level in levels %}
+            <li class="w3-hover-blue" style="font-size: 34px; font-family: Calibri">
+                <a href="{{url_for('listCourses', level_id=level.id)}}">{{level.name}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <br><br>
+    <div id="add">
+        <a style="text-decoration: none" href="{{url_for('newCourse')}}">Add a New Course</a></div>
+    <br><br><br><br><br>
+    <!-- <br><br> -->
+    <!-- <br><br> -->
+    <div class="w3-container w3-green" style="text-align: end">
+        <h2>Learning German is fun !!!</h2>
+    </div>
+</body>
+
+</html>

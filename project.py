@@ -1,7 +1,7 @@
 from dbsetup import Level, Base, Course
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from flask import Flask, request, redirect, render_template, url_for
+from flask import Flask, request, redirect, render_template, url_for, jsonify
 
 from flask import session as login_session
 import string
@@ -21,7 +21,9 @@ CLIENT_ID = json.loads(
 APPLICATION_NAME = "Learn German App"
 
 
-engine = create_engine('sqlite:///germancourse.db')
+# engine = create_engine('sqlite:///germancourse.db')
+engine = create_engine('sqlite:///germancourse.db' +
+                       '?check_same_thread=False')
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
@@ -37,6 +39,26 @@ session = DBSession()
 #     login_session['state'] = state
 #     return render_template('home.html', STATE=state)
 # List down all German Course Levels
+
+
+@app.route('/levels/json')
+def levelsJSON():
+    course_levels = session.query(Level).all()
+    return jsonify(CourseLevels=[i.serialize_levels for i in course_levels])
+
+
+@app.route('/courses/<int:level_id>/json')
+def coursesJSON(level_id):
+    courses = session.query(Course).filter_by(level_id=level_id).all()
+    return jsonify(Courses=[i.serialize_courses for i in courses])
+
+
+@app.route('/course/<int:course_id>/json')
+def courseJSON(course_id):
+    course = session.query(Course).filter_by(id=course_id).one()
+    return jsonify(Course=[course.serialize_courses])
+
+
 @app.route('/')
 # @app.route('/level/')
 @app.route('/home/')
@@ -51,64 +73,68 @@ def listLevels():
     # return render_template('home.html', levels=levels)
 
 
+@app.route('/home_in/')
+def listLevels_in():
+    levels = session.query(Level).all()
+    return render_template('home_in.html', levels=levels)
+
+
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
-    # Validate state token
+    # Check state
     if request.args.get('state') != login_session['state']:
-        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response = make_response(json.dumps('State did not match'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    # Obtain authorization code
+    # Get code
     code = request.data
 
     try:
-        # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
         response = make_response(
-            json.dumps('Failed to upgrade the authorization code.'), 401)
+            json.dumps('Error during upgrade of auth Code.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Check that the access token is valid.
+    # Validate access token
     access_token = credentials.access_token
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
-    # If there was an error in the access token info, abort.
+    # Check whether error
     if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Verify that the access token is used for the intended user.
+    # Validate access token with user
     gplus_id = credentials.id_token['sub']
     if result['user_id'] != gplus_id:
         response = make_response(
-            json.dumps("Token's user ID doesn't match given user ID."), 401)
+            json.dumps("Invalid access token"), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Verify that the access token is valid for this app.
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
-            json.dumps("Token's client ID does not match app's."), 401)
-        print("Token's client ID does not match app's.")
+            json.dumps("Client Id error"), 401)
+        print("Client Id error")
         response.headers['Content-Type'] = 'application/json'
         return response
 
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
+        response = make_response(json.dumps('You are already connected !'),
                                  200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Store the access token in the session for later use.
+    # Storing access token in session
     login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
 
@@ -125,7 +151,7 @@ def gconnect():
 
     levels = session.query(Level).all()
     # return "All levels"
-    return render_template('home.html', levels=levels)
+    return render_template('home_in.html', levels=levels)
 
 
 @app.route('/gdisconnect')
@@ -134,11 +160,11 @@ def gdisconnect():
     if access_token is None:
         print('Access Token is None')
         response = make_response(json.dumps(
-            'Current user not connected.'), 401)
+            'You are not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    print('In gdisconnect access token is %s', access_token)
-    print('User name is: ')
+    print('gdisconnect access token: %s', access_token)
+    print('User name: ')
     print(login_session['username'])
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
     h = httplib2.Http()
@@ -153,10 +179,11 @@ def gdisconnect():
         del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
-        return response
+        # return response
+        return redirect('/home')
     else:
         response = make_response(json.dumps(
-            'Failed to revoke token for given user.', 400))
+            'Oh Oh, could not revoke token.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -173,6 +200,8 @@ def listCourses(level_id):
 # @app.route('/level/<int:level_id>/course/add', methods=['GET', 'POST'])
 @app.route('/course/add', methods=['GET', 'POST'])
 def newCourse():
+    if 'username' not in login_session:
+        return redirect('/home')
     if request.method != 'GET':
         # return "Redirect to levelCourses Page"
         addCourse = Course(name=request.form['course'], details=request.form['detail'],
@@ -190,6 +219,8 @@ def newCourse():
 # Edit a Course of a level
 @app.route('/level/<int:level_id>/course/<int:course_id>/modify', methods=['GET', 'POST'])
 def editCourse(level_id, course_id):
+    if 'username' not in login_session:
+        return redirect('/home')
     if request.method != 'GET':
         modifiedCourse = session.query(Course).filter_by(id=course_id).one()
         if request.form['course']:
@@ -206,6 +237,8 @@ def editCourse(level_id, course_id):
 # Delete a Course of a level
 @app.route('/level/<int:level_id>/course/<int:course_id>/remove', methods=['GET', 'POST'])
 def delCourse(level_id, course_id):
+    if 'username' not in login_session:
+        return redirect('/home')
     removeSelCourse = session.query(Course).filter_by(id=course_id).one()
     if request.method != 'GET':
         session.delete(removeSelCourse)

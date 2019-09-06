@@ -10,8 +10,18 @@
 
 <body style="background-color: antiquewhite">
 
-    <div class="w3-container w3-black">
+    <!-- <div class="w3-container w3-black">
         <h1><a href="{{url_for('listLevels')}}">Learn German in Easy Way</a></h1>
+    </div> -->
+    <div class="w3-container">
+        <div class="w3-display-container w3-black" style="height:70px;">
+            <div class="w3-display-topleft">
+                <h1><a href="{{url_for('listLevels_in')}}">Home</a></h1>
+            </div>
+            <div class="w3-display-topmiddle">
+                <h1>Learn German in Easy Way</h1>
+            </div>
+        </div>
     </div>
     {% for course in levelCourses %}
     <div id="course_title">Course Name:</div>
@@ -42,8 +52,7 @@
             href="{{url_for('editCourse', level_id=course.level_id, course_id=course.id)}}">
             Edit Course</a></div>
     <div id="delete">
-        <a style="text-decoration: none"
-            href="{{url_for('delCourse', level_id=course.level_id, course_id=course.id)}}">
+        <a style="text-decoration: none" href="{{url_for('delCourse', level_id=course.level_id, course_id=course.id)}}">
             Delete Course</div>
     <hr style="border: 1px solid black">
     {% endfor %}

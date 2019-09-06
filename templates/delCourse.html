@@ -10,8 +10,18 @@
 
 <body style="background-color: antiquewhite">
 
-    <div class="w3-container w3-black">
+    <!-- <div class="w3-container w3-black">
         <h1><a href="./home.html">Learn German in Easy Way</a></h1>
+    </div> -->
+    <div class="w3-container">
+        <div class="w3-display-container w3-black" style="height:70px;">
+            <div class="w3-display-topleft">
+                <h1><a href="{{url_for('listLevels_in')}}">Home</a></h1>
+            </div>
+            <div class="w3-display-topmiddle">
+                <h1>Learn German in Easy Way</h1>
+            </div>
+        </div>
     </div>
 
     <form method="POST" action="#">

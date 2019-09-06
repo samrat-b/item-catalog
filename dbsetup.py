@@ -14,6 +14,13 @@ class Level(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(150), nullable=False)
 
+    @property
+    def serialize_levels(self):
+        return{
+            'id': self.id,
+            'name': self.name
+        }
+
 
 class Course(Base):
     __tablename__ = 'course'
@@ -23,7 +30,19 @@ class Course(Base):
     level_id = Column(Integer, ForeignKey('level.id'))
     level = relationship(Level)
 
-# engine = create_engine('sqlite:///germancourse.db') 
-engine = create_engine('sqlite:///germancourse.db', connect_args={'check_same_thread': False})  
+    @property
+    def serialize_courses(self):
+        return{
+            'id': self.id,
+            'name': self.name,
+            'details': self.details
+        }
 
-Base.metadata.create_all(engine)    
+
+# engine = create_engine('sqlite:///germancourse.db')
+# engine = create_engine('sqlite:///germancourse.db', connect_args={'check_same_thread': False})
+engine = create_engine('sqlite:///germancourse.db' +
+                       '?check_same_thread=False')
+
+
+Base.metadata.create_all(engine)
