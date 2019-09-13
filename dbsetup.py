@@ -27,6 +27,7 @@ class Course(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(50), nullable=False)
     details = Column(String(250))
+    user_id = Column(String(250))
     level_id = Column(Integer, ForeignKey('level.id'))
     level = relationship(Level)
 
@@ -39,10 +40,7 @@ class Course(Base):
         }
 
 
-# engine = create_engine('sqlite:///germancourse.db')
-# engine = create_engine('sqlite:///germancourse.db', connect_args={'check_same_thread': False})
-engine = create_engine('sqlite:///germancourse.db' +
+engine = create_engine('sqlite:///germancourse2.db' +
                        '?check_same_thread=False')
-
 
 Base.metadata.create_all(engine)

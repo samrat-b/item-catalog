@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from dbsetup import Level, Base
-engine = create_engine('sqlite:///germancourse.db')
+engine = create_engine('sqlite:///germancourse2.db')
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)

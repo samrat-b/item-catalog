@@ -22,7 +22,7 @@ APPLICATION_NAME = "Learn German App"
 
 
 # engine = create_engine('sqlite:///germancourse.db')
-engine = create_engine('sqlite:///germancourse.db' +
+engine = create_engine('sqlite:///germancourse2.db' +
                        '?check_same_thread=False')
 
 Base.metadata.bind = engine
@@ -166,7 +166,8 @@ def gdisconnect():
     print('gdisconnect access token: %s', access_token)
     print('User name: ')
     print(login_session['username'])
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % \
+        login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     print('result is ')
@@ -187,14 +188,20 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
+
+def get_course_session_user():
+    session_user_courses = session.query(Course).filter_by(
+        user_id=login_session['email']).all()
+    return session_user_courses
+
 # List down Courses of a particular level
 @app.route('/level/<int:level_id>')
 def listCourses(level_id):
     # return "Courses"
     levelCourses = session.query(Course).filter_by(level_id=level_id).all()
     levelName = session.query(Level).filter_by(id=level_id).one().name
-    # return redirect('levelCourses', levelCourses=levelCourses, levelName=levelName)
-    return render_template('levelCourses.html', levelCourses=levelCourses, levelName=levelName)
+    return render_template('levelCourses.html', levelCourses=levelCourses,
+                           levelName=levelName)
 
 # Add a new Course to a level
 # @app.route('/level/<int:level_id>/course/add', methods=['GET', 'POST'])
@@ -202,10 +209,20 @@ def listCourses(level_id):
 def newCourse():
     if 'username' not in login_session:
         return redirect('/home')
+
+    Courses = session.query(Course).all()
+
     if request.method != 'GET':
         # return "Redirect to levelCourses Page"
-        addCourse = Course(name=request.form['course'], details=request.form['detail'],
-                           level_id=session.query(Level).filter_by(name=request.form['level']).one().id)
+        level = session.query(Level).filter_by(
+            name=request.form['level']).one().id
+
+        addCourse = Course(name=request.form['course'],
+                           details=request.form['detail'],
+                           user_id=login_session['email'],
+                           level_id=level)
+    # session.query(Level).filter_by(name=request.form['level']).one().id)
+
         session.add(addCourse)
         session.commit()
         level_id = session.query(Level).filter_by(
@@ -217,10 +234,25 @@ def newCourse():
 
 
 # Edit a Course of a level
-@app.route('/level/<int:level_id>/course/<int:course_id>/modify', methods=['GET', 'POST'])
+@app.route('/level/<int:level_id>/course/<int:course_id>/modify',
+           methods=['GET', 'POST'])
 def editCourse(level_id, course_id):
     if 'username' not in login_session:
         return redirect('/home')
+
+    auth_passed = ''
+    session_user_courses = get_course_session_user()
+    for course in session_user_courses:
+        # if course_id == course['id']:
+        if course_id == course.id:
+            auth_passed = 'X'
+            break
+
+    if auth_passed != 'X':
+        return "<script>function myFunction() \
+ {alert('You are not authorized to edit this course.\
+ Please create your own course in order to edit.'\
+                    );}</script><body onload='myFunction()'>"
     if request.method != 'GET':
         modifiedCourse = session.query(Course).filter_by(id=course_id).one()
         if request.form['course']:
@@ -235,10 +267,26 @@ def editCourse(level_id, course_id):
         return render_template('editCourse.html', course=course)
 
 # Delete a Course of a level
-@app.route('/level/<int:level_id>/course/<int:course_id>/remove', methods=['GET', 'POST'])
+@app.route('/level/<int:level_id>/course/<int:course_id>/remove',
+           methods=['GET', 'POST'])
 def delCourse(level_id, course_id):
     if 'username' not in login_session:
         return redirect('/home')
+
+    auth_passed = ''
+    session_user_courses = get_course_session_user()
+    for course in session_user_courses:
+        # if course_id == course['id']:
+        if course_id == course.id:
+            auth_passed = 'X'
+            break
+
+    if auth_passed != 'X':
+        return "<script>function myFunction() \
+ {alert('You are not authorized to delete this course.\
+ Please create your own course in order to delete.'\
+                    );}</script><body onload='myFunction()'>"
+
     removeSelCourse = session.query(Course).filter_by(id=course_id).one()
     if request.method != 'GET':
         session.delete(removeSelCourse)
