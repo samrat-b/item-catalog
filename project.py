@@ -194,6 +194,7 @@ def get_course_session_user():
         user_id=login_session['email']).all()
     return session_user_courses
 
+
 # List down Courses of a particular level
 @app.route('/level/<int:level_id>')
 def listCourses(level_id):
@@ -202,6 +203,7 @@ def listCourses(level_id):
     levelName = session.query(Level).filter_by(id=level_id).one().name
     return render_template('levelCourses.html', levelCourses=levelCourses,
                            levelName=levelName)
+
 
 # Add a new Course to a level
 # @app.route('/level/<int:level_id>/course/add', methods=['GET', 'POST'])
@@ -265,6 +267,7 @@ def editCourse(level_id, course_id):
     else:
         course = session.query(Course).filter_by(id=course_id).one()
         return render_template('editCourse.html', course=course)
+
 
 # Delete a Course of a level
 @app.route('/level/<int:level_id>/course/<int:course_id>/remove',
