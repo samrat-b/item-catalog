@@ -35,6 +35,10 @@ Consume this App's data into another App using below JSON endpoints:
 3. /course/<int:course_id>/json 
     - Returns a particular course level detail
     
+Application's Home Page Screenshot:
+-----------------------------------
+![Home Page](https://github.com/samrat-b/item-catalog/blob/master/images/AppHome.png)
+    
 Acknowledgment
 --------------
 I acknowledge [Udacity](https://www.udacity.com/) for the tutorials and resources, which assisted me to develop this app.
